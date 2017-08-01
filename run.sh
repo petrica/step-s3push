@@ -8,10 +8,10 @@ set_auth() {
   fi
 
   echo '[default]' > "$s3cnf"
-  echo "access_key=$WERCKER_S3SYNC_KEY_ID" >> "$s3cnf"
-  echo "secret_key=$WERCKER_S3SYNC_KEY_SECRET" >> "$s3cnf"
+  echo "access_key=$WERCKER_S3PUSH_KEY_ID" >> "$s3cnf"
+  echo "secret_key=$WERCKER_S3PUSH_KEY_SECRET" >> "$s3cnf"
 
-  debug "generated .s3cfg for key $WERCKER_S3SYNC_KEY_ID"
+  debug "generated .s3cfg for key $WERCKER_S3PUSH_KEY_ID"
 }
 
 main() {
@@ -19,23 +19,23 @@ main() {
 
   info 'starting s3 push'
 
-  if [ ! -n "$WERCKER_S3SYNC_KEY_ID" ]; then
+  if [ ! -n "$WERCKER_S3PUSH_KEY_ID" ]; then
     fail 'missing or empty option key_id, please check wercker.yml'
   fi
 
-  if [ ! -n "$WERCKER_S3SYNC_KEY_SECRET" ]; then
+  if [ ! -n "$WERCKER_S3PUSH_KEY_SECRET" ]; then
     fail 'missing or empty option key_secret, please check wercker.yml'
   fi
 
-  if [ ! -n "$WERCKER_S3SYNC_BUCKET_URL" ]; then
+  if [ ! -n "$WERCKER_S3PUSH_BUCKET_URL" ]; then
     fail 'missing or empty option bucket_url, please check wercker.yml'
   fi
 
-  if [ ! -n "$WERCKER_S3SYNC_OPTS" ]; then
-    export WERCKER_S3SYNC_OPTS="--acl-public"
+  if [ ! -n "$WERCKER_S3PUSH_OPTS" ]; then
+    export WERCKER_S3PUSH_OPTS="--acl-public"
   fi
 
-  source_dir="$WERCKER_ROOT/$WERCKER_S3SYNC_SOURCE_DIR"
+  source_dir="$WERCKER_ROOT/$WERCKER_S3PUSH_SOURCE_DIR"
   if cd "$source_dir";
   then
       debug "changed directory $source_dir, content is: $(ls -l)"
@@ -44,7 +44,7 @@ main() {
   fi
 
   set +e
-  local SYNC="$WERCKER_STEP_ROOT/s3cmd put --recursive --verbose ./ $WERCKER_S3SYNC_BUCKET_URL"
+  local SYNC="$WERCKER_STEP_ROOT/s3cmd put --recursive --verbose ./ $WERCKER_S3PUSH_BUCKET_URL"
   debug "$SYNC"
   local sync_output=$($SYNC)
 
