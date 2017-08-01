@@ -17,7 +17,7 @@ set_auth() {
 main() {
   set_auth
 
-  info 'starting s3 synchronisation'
+  info 'starting s3 push'
 
   if [ ! -n "$WERCKER_S3SYNC_KEY_ID" ]; then
     fail 'missing or empty option key_id, please check wercker.yml'
@@ -35,16 +35,6 @@ main() {
     export WERCKER_S3SYNC_OPTS="--acl-public"
   fi
 
-  if [ -n "$WERCKER_S3SYNC_DELETE_REMOVED" ]; then
-      if [ "$WERCKER_S3SYNC_DELETE_REMOVED" = "true" ]; then
-          export WERCKER_S3SYNC_DELETE_REMOVED="--delete-removed"
-      else
-          unset WERCKER_S3SYNC_DELETE_REMOVED
-      fi
-  else
-      export WERCKER_S3SYNC_DELETE_REMOVED="--delete-removed"
-  fi
-
   source_dir="$WERCKER_ROOT/$WERCKER_S3SYNC_SOURCE_DIR"
   if cd "$source_dir";
   then
@@ -54,7 +44,7 @@ main() {
   fi
 
   set +e
-  local SYNC="$WERCKER_STEP_ROOT/s3cmd sync $WERCKER_S3SYNC_OPTS $WERCKER_S3SYNC_DELETE_REMOVED --verbose ./ $WERCKER_S3SYNC_BUCKET_URL"
+  local SYNC="$WERCKER_STEP_ROOT/s3cmd put --recursive --verbose ./ $WERCKER_S3SYNC_BUCKET_URL"
   debug "$SYNC"
   local sync_output=$($SYNC)
 
@@ -63,7 +53,7 @@ main() {
       fail 's3cmd failed';
   else
       echo "$sync_output"
-      success 'finished s3 synchronisation';
+      success 'finished s3 push';
   fi
   set -e
 }

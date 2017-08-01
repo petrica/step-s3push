@@ -1,8 +1,6 @@
 # s3sync
 
-Synchronize a directory to a s3 bucket. It makes the bucket identical to the `source-dir`.
-Note that this means that remote files that are not in the `source-dir` are deleted.
-The synchronized files will get an public access level.
+Push a directory recursively to a s3 bucket. The pushed files will get an public access level.
 
 It is recommended that you use application and deployment variables in wercker, so you don't include any private keys in your code.
 
@@ -18,7 +16,6 @@ It is recommended that you use application and deployment variables in wercker, 
 * `key-secret` (required) The Amazon Access secret that will be used for authorization.
 * `bucket-url` (required) The url of the bucket to sync to, like: `s3://wercker.com`, where `wercker.com` is the bucket name.
 * `source-dir` (optional, default: `./`) The directory to sync to the remote bucket.
-* `delete-removed` (optional, default: `true`) Add `--delete-remove` flag if this is `true`.
 * `opts` (optional, default: `--acl-public`) Arbitrary options provided to s3cmd. See `s3cmd --help` for more.
 
 # Example
@@ -74,35 +71,3 @@ It's a good idea to create a IAM user which just has enough permissions to be ab
   ]
 }
 ```
-
-# License
-
-The MIT License (MIT)
-
-# Changelog
-
-## 2.0.3
-
-- Always display s3cmd output
-
-## 2.0.2
-
-- Fix `source-dir` bug
-
-## 2.0.0
-
-- Refactor run.sh
-- Update s3cmd to 1.5.1.2
-- Bundle s3cmd in step
-
-## 1.1.0
-
-- Add `delete-removed` parameter
-
-## 1.0.0
-
-- Add information about permissions to the README
-
-## 0.0.3
-
-- Initial release
