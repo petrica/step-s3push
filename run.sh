@@ -44,7 +44,7 @@ main() {
   fi
 
   set +e
-  local SYNC="$WERCKER_STEP_ROOT/s3cmd put --recursive --verbose ./ $WERCKER_S3PUSH_BUCKET_URL"
+  local SYNC="$WERCKER_STEP_ROOT/s3cmd put $WERCKER_S3PUSH_OPTS --recursive --verbose ./ $WERCKER_S3PUSH_BUCKET_URL"
   debug "$SYNC"
   local sync_output=$($SYNC)
 
